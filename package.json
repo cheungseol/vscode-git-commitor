@@ -18,7 +18,7 @@
         "commands": [
             {
                 "command": "vscode-git-commitor.commit",
-                "title": "Hello World"
+                "title": "commitor"
             }
         ]
     },
@@ -37,6 +37,9 @@
         "@types/mocha": "^2.2.42"
     },
     "dependencies": {
-        "execa": "^1.0.0"
+        "@types/execa": "^0.9.0",
+        "@types/wrap-ansi": "^3.0.0",
+        "execa": "^1.0.0",
+        "wrap-ansi": "^4.0.0"
     }
 }

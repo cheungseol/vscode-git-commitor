@@ -2,45 +2,60 @@
 import * as vscode from 'vscode';
 import * as execa from 'execa';
 
-// 多选一
-export async function askOneOf(question: string, picks: vscode.QuickPickItem[],
-    save: (pick: vscode.QuickPickItem) => void, customLabel?: string, customQuestion?: string): Promise<boolean> {
+// 多选
+export async function selectPalette(
+	question: string, picks: vscode.QuickPickItem[],
+	callback: (pick: vscode.QuickPickItem) => void
+): Promise<boolean> {
     const pickOptions: vscode.QuickPickOptions = {
-      placeHolder: question,
-      ignoreFocusOut: true,
-      matchOnDescription: true,
-      matchOnDetail: true
+		placeHolder: question,
+		ignoreFocusOut: true,
+		matchOnDescription: true,
+		matchOnDetail: true
     };
     const pick = await vscode.window.showQuickPick(picks, pickOptions);
-    if (pick && pick.label === customLabel && !!customQuestion) {
-      const next = await ask(customQuestion || '', input => {
-        save({label: input, description: ''});
-        return true;
-      });
-      return next;
-    }
     if (pick === undefined) {
-      return false;
+      	return false;
     }
-    save(pick);
+    callback(pick);
     return true;
 }
 
-async function ask(question: string, save: (input: string) => void,
-  validate?: (input: string) => string): Promise<boolean> {
-  const options: vscode.InputBoxOptions = {
-    placeHolder: question,
-    ignoreFocusOut: true
-  };
-  if (validate) {
-    options.validateInput = validate;
+// 输入框
+export async function inputPalette(question: string, save: (input: string) => void,
+	validate?: (input: string) => string): Promise<boolean> {
+	const options: vscode.InputBoxOptions = {
+		placeHolder: question,
+		ignoreFocusOut: true
+	};
+	if (validate) {
+		options.validateInput = validate;
+	}
+	const input = await vscode.window.showInputBox(options);
+	if (input === undefined) {
+		return false;
+	}
+	save(input);
+	return true;
+}
+
+
+// git 工作区改动文件添加到暂存区域
+async function conditionallyStageFiles(cwd: string, channel: vscode.OutputChannel): Promise<void> {
+  if (!(await hasStagedFiles(cwd))) {
+    channel.appendLine('Staging all files (enableSmartCommit enabled with nothing staged)');
+    await vscode.commands.executeCommand('git.stageAll');
   }
-  const input = await vscode.window.showInputBox(options);
-  if (input === undefined) {
-    return false;
-  }
-  save(input);
-  return true;
+}
+
+// 检查 git 暂存区是否有文件
+async function hasStagedFiles(cwd: string): Promise<boolean> {
+  const result = await execa('git', ['diff', '--name-only', '--cached'], {cwd});
+  return hasOutput(result);
+}
+
+function hasOutput(result?: {stdout?: string}): boolean {
+  return Boolean(result && result.stdout);
 }
 
 
@@ -49,30 +64,24 @@ export async function execCommit(cwd: string, message: string, channel: vscode.O
     channel.appendLine(`About to commit '${message}'`);
 
     function hasOutput(result?: {stdout?: string}): boolean {
-      return Boolean(result && result.stdout);
+      return Boolean(result && result.stdout);  
     }
-
-    // function shouldShowOutput(result: {code: number}): boolean {
-    //   return getConfiguration().showOutputChannel === 'always'
-    //     || getConfiguration().showOutputChannel === 'onError' && result.code > 0;
-    // }
-
     try {
-    //   await conditionallyStageFiles(cwd);
-      const result = await execa('git', ['commit', '-m', message], {cwd});
-      await vscode.commands.executeCommand('git.refresh');
-      // if (getConfiguration().autoSync) {
-      //   await vscode.commands.executeCommand('git.sync');
-      // }
-      if (hasOutput(result)) {
-        result.stdout.split('\n').forEach(line => channel.appendLine(line));
-        // if (shouldShowOutput(result)) {
-          channel.show();
-        // }
-      }
+		await conditionallyStageFiles(cwd, channel);
+		const result = await execa('git', ['commit', '-m', message], {cwd});
+		await vscode.commands.executeCommand('git.refresh');
+		// if (getConfiguration().autoSync) {
+		//   await vscode.commands.executeCommand('git.sync');
+		// }
+		if (hasOutput(result)) {
+			result.stdout.split('\n').forEach(line => channel.appendLine(line));
+			channel.show();
+		}
+		// Display a message box to the user
+		vscode.window.showInformationMessage('You have just commit a change!');
     } catch (e) {
-      vscode.window.showErrorMessage(e.message);
-      channel.appendLine(e.message);
-      channel.appendLine(e.stack);
+		vscode.window.showErrorMessage(e.message);
+		channel.appendLine(e.message);
+      	channel.appendLine(e.stack);
     }
 }

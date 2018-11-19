@@ -1,27 +1,24 @@
 // 提示问题
 export const QUESTIONS = {
-    type: 'Select the type of change that you\'re committing',
-    customScope: 'Denote the SCOPE of this change',
-    customScopeEntry: 'Custom scope...',
-    scope: 'Denote the SCOPE of this change (optional)',
-    subject: 'Write a SHORT, IMPERATIVE tense description of the change',
-    body: 'Provide a LONGER description of the change (optional). Use "|" to break new line',
-    breaking: 'List any BREAKING CHANGES (optional)',
-    footer: 'List any ISSUES CLOSED by this change (optional). E.g.: #31, #34'
+    type: '请选择本次提交内容类型',
+    scope: '请输入本次提交涉及变动的目录或文件',
+    title: '请输入本次改动的一个简明扼要的概述',
+    description: '较为详细的描述 (optional). 使用"|" 换行',
+    refer: '请输入本次code review的同事邮箱前缀'
 };
 
 export const COMMIT_TYPES = [
     {
       value: 'feat',
-      name: 'A new feature'
+      name: 'New feature'
     },
     {
       value: 'fix',
-      name: 'A bug fix'
+      name: 'Bug fix'
     },
     {
       value: 'docs',
-      name: 'Documentation only changes'
+      name: 'Documentation'
     },
     {
       value: 'style',
@@ -29,11 +26,11 @@ export const COMMIT_TYPES = [
     },
     {
       value: 'refactor',
-      name: 'A code change that neither fixes a bug nor adds a feature'
+      name: 'Code changes that neither fix a bug nor add a feature'
     },
     {
       value: 'perf',
-      name: 'A code change that improves performance'
+      name: 'Improve performance'
     },
     {
       value: 'test',
@@ -41,11 +38,7 @@ export const COMMIT_TYPES = [
     },
     {
       value: 'build',
-      name: 'Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)'
-    },
-    {
-      value: 'ci',
-      name: 'Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)'
+      name: 'Changes that affect the build system or external dependencies'
     },
     {
       value: 'chore',
