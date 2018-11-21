@@ -55,35 +55,6 @@ class CommitorController {
             this.description + '\n\n'
         ].join('');
     }
-
-    public async codeReviewInfo(): Promise<void> {
-        const TEXT = "测试测试测试";
-        const TITLE = `${this.refer}邀请你本次coomit改动做code review。详情查看地址：`;
-    
-        const LARK_MSG_URL = "https://oapi.zjurl.cn/open-apis/api/v2/message/private_chat";
-        const ROBOT_TOKEN = "b-a40d31fc-45cc-4f3c-ac35-d4df8feaa4d5";
-        const USER_EMAIL = this.refer + "@bytedance.com";
-    
-        // lark 通知 cr 同事
-        request.post({
-            headers: {'content-type' : 'application/json'},
-            url: LARK_MSG_URL,
-            json: true,
-            body: {
-                token: ROBOT_TOKEN,
-                email: USER_EMAIL,
-                msg_type: 'post',
-                content: {
-                    title: TITLE,
-                    text: TEXT
-                }
-            }
-          }, function(error: any, response: any, body: any){
-                console.log('error:', error);
-                console.log('resp:', response);
-          });
-    }
-
     
     dispose() {
         // this._disposable.dispose();
