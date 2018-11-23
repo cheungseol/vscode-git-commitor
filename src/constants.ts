@@ -10,7 +10,7 @@ export const QUESTIONS = {
 export const COMMIT_TYPES = [
     {
       value: 'feat',
-      name: 'New feature'
+      name: 'Feature'
     },
     {
       value: 'fix',
@@ -22,26 +22,22 @@ export const COMMIT_TYPES = [
     },
     {
       value: 'style',
-      name: 'Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)'
+      name: 'Formatting, missing semi colons, …'
     },
     {
       value: 'refactor',
-      name: 'Code changes that neither fix a bug nor add a feature'
-    },
-    {
-      value: 'perf',
-      name: 'Improve performance'
+      name: 'Breaking change'
     },
     {
       value: 'test',
-      name: 'Adding missing tests or correcting existing tests'
+      name: 'Adding missing tests'
     },
     {
       value: 'build',
-      name: 'Changes that affect the build system or external dependencies'
+      name: 'Affect the build system or external dependencies'
     },
     {
       value: 'chore',
-      name: 'Other changes that don\'t modify src or test files'
+      name: 'Maintain'
     }
 ];

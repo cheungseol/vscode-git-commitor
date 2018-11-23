@@ -1,17 +1,17 @@
+
 # vscode-git-commitor README
+Format your git commit info. follows this format [Git Commit Message Conventions](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#heading=h.greljkmo14y0):
 
-Format your git commit text
+```
+[type](<scope>): <subject>
 
-## Features
+<desciption>
+```
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+# Usage
+1. add a git repo into vscode workspace, edit code and make some changes,
 
-For example if there is an image subfolder under your extension project workspace:
+2. open the command panel in vscode :  ```cmd + shift + p ```
 
-\!\[feature X\]\(images/feature-x.png\)
+3. type command :```commitor``` to use this extension, and then follow its tips to make a commit.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.

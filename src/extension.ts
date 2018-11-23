@@ -3,14 +3,11 @@ import * as vscode from 'vscode';
 import { QUESTIONS, COMMIT_TYPES } from './constants';
 import { selectPalette, inputPalette, execCommit } from './util';
 import * as wrap from 'wrap-ansi';
-var request = require('request');
 
 
 let channel: vscode.OutputChannel;
 
 export function activate(context: vscode.ExtensionContext) {
-
-    console.info('your extension "vscode-git-commitor" is now active!');
 
     channel = vscode.window.createOutputChannel('commitizen');
     channel.appendLine('"vscode-git-commitor" is now active~~~~');
@@ -24,10 +21,8 @@ export function activate(context: vscode.ExtensionContext) {
         await commitor.queryScope();
         await commitor.queryTitle();
         await commitor.queryDescription();
-        await commitor.queryRefer();
         if (vscode.workspace.workspaceFolders) {
             await execCommit(vscode.workspace.workspaceFolders[0].uri.fsPath, commitor.formattedCommit.trim(), channel);
-            // await commitor.codeReviewInfo();
         }
     });
 
@@ -43,14 +38,13 @@ class CommitorController {
     private scope: string|undefined;     
     private title: string|undefined;
     private description: string|undefined;
-    private refer: string|undefined;
+    // private refer: string|undefined;
 
-    // 暴露获取 commit 信息的接口
     public get formattedCommit(): string {
         // tslint:disable-next-line
         return  [ 
-            '[' + this.type + '] ',
-            (typeof this.scope === 'string' && this.scope ? `(${this.scope})` : ''),
+            '[' + this.type + ']',
+            (typeof this.scope === 'string' && this.scope ? ` (${this.scope}): ` : ': '),
             this.title + '\n\n',
             this.description + '\n\n'
         ].join('');
@@ -84,7 +78,7 @@ class CommitorController {
         await inputPalette(QUESTIONS['description'], input => this.description = wrap(input.split('|').join('\n'), 72, {hard: true}));
     }
 
-    async queryRefer(): Promise<void> {
-        await inputPalette(QUESTIONS['refer'], (input: string) => this.refer = input);
-    }
+    // async queryRefer(): Promise<void> {
+    //     await inputPalette(QUESTIONS['refer'], (input: string) => this.refer = input);
+    // }
 }
